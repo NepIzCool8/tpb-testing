@@ -138,7 +138,7 @@
   <!-- 3D Viewer Section -->
   <section id="3dviewer">
     <h2>3D Model Viewer</h2>
-    <p>Explore Earth in 3D!</p>
+    <p>Explore planets in 3D!</p>
     <div id="viewer" style="width: 100%; height: 500px; position: relative;"></div>
   </section>
 
@@ -168,18 +168,28 @@
     light.position.set(2, 2, 5).normalize();
     scene.add(light);
 
-    // Load the .glb Model
+    // GLTF Loader
     const loader = new THREE.GLTFLoader();
-    loader.load('Earth.glb', function(gltf) {
-      const model = gltf.scene;
-      model.scale.set(1, 1, 1); // Adjust size if needed
-      scene.add(model);
-    }, undefined, function(error) {
-      console.error('An error occurred while loading the 3D model:', error);
-    });
 
-    // Set the camera position
-    camera.position.z = 5;
+    // Function to load a model
+    function loadModel(path, position) {
+      loader.load(path, function(gltf) {
+        const model = gltf.scene;
+        model.scale.set(1, 1, 1);
+        model.position.set(...position);
+        scene.add(model);
+      }, undefined, function(error) {
+        console.error('An error occurred:', error);
+      });
+    }
+
+    // Load all models
+    loadModel('Earth.glb', [-3, 0, 0]); // Position Earth
+    loadModel('Mars.glb', [0, 0, 0]);   // Position Mars
+    loadModel('Saturn.glb', [3, 0, 0]); // Position Saturn
+
+    // Camera position
+    camera.position.z = 7;
 
     // Animation loop
     function animate() {
